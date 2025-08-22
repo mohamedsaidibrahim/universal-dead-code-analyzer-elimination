@@ -1,0 +1,11 @@
+# Default ignore patterns (similar to .gitignore semantics)
+node_modules/
+dist/
+coverage/
+**/*.spec.ts
+**/*.test.ts
+**/__tests__/**
+# Generated types or API clients
+**/generated/**
+# Example: ignore a folder
+# src/legacy/**

@@ -1,0 +1,73 @@
+{
+  "name": "universal-unused-code-analyzer",
+  "version": "1.0.0",
+  "description": "Detect and optionally remove unused code across TS/JS projects with Cypress and Playwright-aware detectors.",
+  "bin": {
+    "analyzer": "dist/cli.js"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    ".analyzerignore",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "rimraf dist && tsc -p tsconfig.build.json && rollup -c",
+    "dev": "tsx src/cli.ts --help",
+    "lint": "eslint .",
+    "format": "prettier -w .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "release": "npm version patch && npm publish --access public",
+    "init-ignore": "node ./dist/cli.js --init-ignore"
+  },
+  "keywords": [
+    "unused code",
+    "dead code",
+    "typescript",
+    "javascript",
+    "cypress",
+    "playwright",
+    "static analysis",
+    "cli"
+  ],
+  "author": "Mohamed Said Ibrahim",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.6.0",
+    "commander": "^14.0.0",
+    "fast-glob": "^3.3.3",
+    "fs-extra": "^11.3.1",
+    "ignore": "^7.0.5",
+    "ts-morph": "^26.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
+    "eslint": "^9.33.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.47.1",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.8.1",
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}
