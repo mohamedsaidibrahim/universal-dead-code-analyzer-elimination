@@ -4,19 +4,18 @@
 
 Detect and optionally **remove unused code** across TypeScript/JavaScript projects. Includes detectors for **Cypress custom commands** and **Playwright fixtures**. Safe defaults, CI-friendly reports, and an ignore file for precise scoping.
 
-
 ---
 
 ## 📦 Installation
 
 ```bash
-npm install -g universal-unused-code-analyzer
+npm install -g universal-dead-code-analyzer-elimination
 ```
 
 Or run without installing globally:
 
 ```bash
-npx universal-unused-code-analyzer src/
+npx universal-dead-code-analyzer-elimination src/
 ```
 
 ---
@@ -28,7 +27,7 @@ npx universal-unused-code-analyzer src/
 Analyze your project without making changes:
 
 ```bash
-universal-unused-code-analyzer src/
+universal-dead-code-analyzer-elimination src/
 ```
 
 This will scan all `.ts`, `.tsx`, `.js`, and `.jsx` files in the `src/` folder and report unused items.
@@ -38,14 +37,14 @@ This will scan all `.ts`, `.tsx`, `.js`, and `.jsx` files in the `src/` folder a
 Generate a report instead of modifying files:
 
 ```bash
-universal-unused-code-analyzer src/ --report
+universal-dead-code-analyzer-elimination src/ --report
 ```
 
 Choose a report format:
 
 ```bash
-universal-unused-code-analyzer src/ --report --report-format json
-universal-unused-code-analyzer src/ --report --report-format md
+universal-dead-code-analyzer-elimination src/ --report --report-format json
+universal-dead-code-analyzer-elimination src/ --report --report-format md
 ```
 
 - **JSON** → machine-readable, great for CI/CD.
@@ -56,7 +55,7 @@ universal-unused-code-analyzer src/ --report --report-format md
 ⚠️ Use with caution. Always start with `--report` first.
 
 ```bash
-universal-unused-code-analyzer src/ --delete
+universal-dead-code-analyzer-elimination src/ --delete
 ```
 
 This removes unused members directly from your source files.
@@ -79,7 +78,7 @@ This removes unused members directly from your source files.
   - Generate a template:
 
     ```bash
-    universal-unused-code-analyzer --init-ignore
+    universal-dead-code-analyzer-elimination --init-ignore
     ```
 
 - **Reports**
@@ -96,20 +95,22 @@ This removes unused members directly from your source files.
 ## ⚙️ Example Workflow
 
 1. Initialize ignore rules:
+
    ```bash
-   universal-unused-code-analyzer --init-ignore
+   universal-dead-code-analyzer-elimination --init-ignore
    ```
 
 2. Run safe report:
+
    ```bash
-   universal-unused-code-analyzer src/ --report --report-format md
+   universal-dead-code-analyzer-elimination src/ --report --report-format md
    ```
 
 3. Review the report, update `.analyzerignore` if needed.
 
 4. When confident, clean up:
    ```bash
-   universal-unused-code-analyzer src/ --delete
+   universal-dead-code-analyzer-elimination src/ --delete
    ```
 
 ---
@@ -123,7 +124,6 @@ This removes unused members directly from your source files.
 - `--cwd <dir>` Working directory
 - `--init-ignore` Create a default `.analyzerignore` in project root
 - `--out <file>` Write report to a file
-
 
 ## What It Detects
 
@@ -157,7 +157,6 @@ analyzer --init-ignore
 ```
 
 ---
-
 
 ## Safety Practices
 
@@ -207,7 +206,6 @@ unused_code:
 
 Create a new file in `src/lib/detectors/yourDetector.ts` that implements a `scan(globs): Promise<ScanResult>`. Merge its results in `src/lib/UniversalUnusedCodeAnalyzer.ts`..
 
-
 ### PR Annotations
 
 The package integrates with GitHub Checks API to annotate unused code inline in pull requests.
@@ -229,19 +227,17 @@ For convenience, add scripts to your `package.json`:
 ```json
 {
   "scripts": {
-    "analyze": "universal-unused-code-analyzer src/ --report",
-    "analyze:delete": "universal-unused-code-analyzer src/ --delete"
+    "analyze": "universal-dead-code-analyzer-elimination src/ --report",
+    "analyze:delete": "universal-dead-code-analyzer-elimination src/ --delete"
   }
 }
 ```
 
 ---
 
-
 ## 🙌 Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md).
-
 
 ## License
 
