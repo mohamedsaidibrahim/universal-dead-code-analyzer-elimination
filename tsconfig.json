@@ -1,8 +1,8 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": ".", // Or "c:/Users/Moham/OneDrive/Desktop/UniversalUnusedCodeAnalyzer"
+    "outDir": "dist"
   },
   "include": ["src"]
 }

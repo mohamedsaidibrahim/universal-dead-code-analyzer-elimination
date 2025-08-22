@@ -6,6 +6,7 @@ import { writeReport } from './lib/reporter.js';
 import { ensureDefaultIgnore } from './lib/initIgnore.js';
 import fs from 'fs-extra';
 import path from 'path';
+import { UnusedMember } from './lib/types.js';
 
 const program = new Command();
 program
@@ -62,3 +63,29 @@ program
   });
 
 program.parseAsync(process.argv);
+
+export type UnusedMemberKind = 'exported-symbol' | 'react-component';
+
+export interface FrameworkContext {
+  /** absolute paths considered entry points (never flagged) */
+  entryFiles: Set<string>;
+}
+
+export interface ScanSummary {
+  files: number;
+  totalUnused: number;
+}
+
+export interface ScanResult {
+  unused: UnusedMember[];
+  summary: ScanSummary;
+}
+
+export interface IgnoreApi {
+  ignores: (p: string) => boolean;
+}
+
+export interface AnalyzerOptions {
+  cwd: string;
+  ignore: IgnoreApi;
+}

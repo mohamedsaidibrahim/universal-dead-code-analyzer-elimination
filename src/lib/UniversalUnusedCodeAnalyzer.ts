@@ -1,29 +1,36 @@
-import fg from 'fast-glob';
+// FILE: src/lib/UniversalUnusedCodeAnalyzer.ts
 import { CoreDetector } from './detectors/core.js';
 import { CypressDetector } from './detectors/cypress.js';
 import { PlaywrightDetector } from './detectors/playwright.js';
 import { AnalyzerOptions, IgnoreApi, ScanResult, UnusedMember } from './types.js';
-import path from 'path';
 import { Project, Node } from 'ts-morph';
+import { ReactDetector } from './detectors/react';
+import { ExportGraphDetector } from './detectors/exportGraph.js';
 
 export class UniversalUnusedCodeAnalyzer {
   private core: CoreDetector;
   private cypress: CypressDetector;
   private pw: PlaywrightDetector;
+  private exportGraph: ExportGraphDetector;
+  private react: ReactDetector;
   constructor(private readonly opts: { cwd: string; ignore: IgnoreApi }) {
     this.core = new CoreDetector(opts);
     this.cypress = new CypressDetector(opts);
     this.pw = new PlaywrightDetector(opts);
+    this.exportGraph = new ExportGraphDetector(opts);
+    this.react = new ReactDetector(opts);
   }
 
   async scan(globs: string[]): Promise<ScanResult> {
-    const [core, cypress, pw] = await Promise.all([
+    const [core, cypress, pw, graph, react] = await Promise.all([
       this.core.scan(globs),
       this.cypress.scan(globs),
-      this.pw.scan(globs)
+      this.pw.scan(globs),
+      this.exportGraph.scan(globs),
+      this.react.scan(globs)
     ]);
 
-    const allUnused = [...core.unused, ...cypress.unused, ...pw.unused];
+    const allUnused = [...core.unused, ...cypress.unused, ...pw.unused, ...graph.unused, ...react.unused];
     const files = new Set<string>();
     for (const u of allUnused) files.add(u.file);
 
@@ -33,10 +40,6 @@ export class UniversalUnusedCodeAnalyzer {
     };
   }
 
-  /**
-   * Delete unused members from disk. Currently handles function/class/enum/type/interface/variable
-   * via ts-morph, and removes Cypress command registrations.
-   */
   async deleteUnused(result: ScanResult) {
     const byFile = new Map<string, UnusedMember[]>();
     for (const u of result.unused) {
@@ -49,14 +52,12 @@ export class UniversalUnusedCodeAnalyzer {
 
     for (const [file, items] of byFile) {
       const project = new Project({
-        tsConfigFilePath: path.join(this.opts.cwd, 'tsconfig.json'),
         skipAddingFilesFromTsConfig: true,
         compilerOptions: { allowJs: true, checkJs: false }
       });
       const sf = project.addSourceFileAtPathIfExists(file);
       if (!sf) continue;
 
-      // Remove declarations by position matching (line numbers can drift; match by name/kind)
       for (const u of items) {
         const removed = this.removeNodeByKind(sf, u);
         if (removed) deleted++;
@@ -73,17 +74,10 @@ export class UniversalUnusedCodeAnalyzer {
 
   private removeNodeByKind(sf: any, u: UnusedMember): boolean {
     let removed = false;
-
-    const tryRemove = (node: any) => {
-      try {
-        node.remove();
-        removed = true;
-      } catch {}
-    };
+    const tryRemove = (node: any) => { try { node.remove(); removed = true; } catch { } };
 
     sf.forEachDescendant((node: any) => {
       if (removed) return;
-      // Core declarations
       if (u.kind === 'function' && Node.isFunctionDeclaration(node) && node.getName() === u.name) tryRemove(node);
       if (u.kind === 'class' && Node.isClassDeclaration(node) && node.getName() === u.name) tryRemove(node);
       if (u.kind === 'enum' && Node.isEnumDeclaration(node) && node.getName() === u.name) tryRemove(node);
@@ -94,7 +88,6 @@ export class UniversalUnusedCodeAnalyzer {
         tryRemove(node);
         if (vd && Node.isVariableDeclarationList(vd) && vd.getDeclarations().length === 0) tryRemove(vd);
       }
-      // Cypress command registrations
       if (u.kind === 'cypress-command' && Node.isCallExpression(node)) {
         const expr = node.getExpression();
         if (Node.isPropertyAccessExpression(expr) && expr.getText() === 'Cypress.Commands.add') {
@@ -102,6 +95,19 @@ export class UniversalUnusedCodeAnalyzer {
           const name = first?.getText()?.replace(/^['"]|['"]$/g, '');
           if (name === u.name) tryRemove(node);
         }
+      }
+      if (u.kind === 'exported-symbol') {
+        // Remove exported declaration by name if possible
+        if (Node.isExportDeclaration(node)) return; // skip bare exports
+        if (Node.isVariableDeclaration(node) && node.getName() === u.name) tryRemove(node);
+        if (Node.isFunctionDeclaration(node) && node.getName() === u.name) tryRemove(node);
+        if (Node.isClassDeclaration(node) && node.getName() === u.name) tryRemove(node);
+        if (Node.isInterfaceDeclaration(node) && node.getName() === u.name) tryRemove(node);
+        if (Node.isTypeAliasDeclaration(node) && node.getName() === u.name) tryRemove(node);
+      }
+      if (u.kind === 'react-component') {
+        if (Node.isFunctionDeclaration(node) && node.getName() === u.name) tryRemove(node);
+        if (Node.isVariableDeclaration(node) && node.getName() === u.name) tryRemove(node);
       }
     });
 

@@ -38,10 +38,12 @@ analyzer src/ --delete
 ## What It Detects
 
 - Unused **functions, classes, methods, variables, enums, types, interfaces**, and certain **default exports** (heuristic)
+- Unused **exported symbols** that are **never referenced/imported** elsewhere (simple tree-shake heuristic)
+- Unused **React components** (PascalCase) not found in any JSX
 - Unused **Cypress custom commands** declared via `Cypress.Commands.add('name', ...)` not referenced as `cy.name(...)`
-- Unused **Playwright fixtures** declared through `test.extend<{ name: ... }>()` but never injected in test callbacks like `({ name })`
+- Unused **Playwright fixtures** declared through `test.extend<{ name: ... }>()` but never injected in test callbacks like `({ name })
 
-> ⚠ Methods and default exports rely on heuristics and may have false positives/negatives in advanced patterns.
+> ⚠ Framework entry files (Next.js `pages/**` or `app/**`) are treated as entrypoints and never flagged.
 
 ## Ignore File: `.analyzerignore`
 
@@ -108,7 +110,7 @@ unused_code:
 
 ## Extending with Custom Detectors
 
-Create a new file in `src/lib/detectors/yourDetector.ts` that implements a `scan(globs): Promise<ScanResult>`. Merge its results in `UniversalUnusedCodeAnalyzer.scan()`.
+Create a new file in `src/lib/detectors/yourDetector.ts` that implements a `scan(globs): Promise<ScanResult>`. Merge its results in `src/lib/UniversalUnusedCodeAnalyzer.ts`..
 
 ## Contributing
 

@@ -8,6 +8,8 @@ export type UnusedKind =
     | 'type'
     | 'interface'
     | 'export-default'
+    | 'exported-symbol'
+    | 'react-component'
     | 'cypress-command'
     | 'playwright-fixture';
 
