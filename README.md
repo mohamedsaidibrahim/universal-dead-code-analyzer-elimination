@@ -1,29 +1,118 @@
 # universal-dead-code-analyzer-elimination
 
+> 🚀 Detect and eliminate unused code in TypeScript/JavaScript projects safely and efficiently.
+
 Detect and optionally **remove unused code** across TypeScript/JavaScript projects. Includes detectors for **Cypress custom commands** and **Playwright fixtures**. Safe defaults, CI-friendly reports, and an ignore file for precise scoping.
 
-## Install
+
+---
+
+## 📦 Installation
 
 ```bash
-npm i -g universal-unused-code-analyzer
-# or project-local
-npm i -D universal-unused-code-analyzer
+npm install -g universal-unused-code-analyzer
 ```
 
-## Quickstart
+Or run without installing globally:
 
 ```bash
-# Report-only (safe default)
-analyzer src/
-
-# JSON report for CI
-analyzer src/ --report --report-format json --out analyzer-report.json
-
-# Initialize ignore file\ananalyzer --init-ignore
-
-# Destructive cleanup (after verifying reports)
-analyzer src/ --delete
+npx universal-unused-code-analyzer src/
 ```
+
+---
+
+## 🏃 Usage
+
+### Basic Analysis
+
+Analyze your project without making changes:
+
+```bash
+universal-unused-code-analyzer src/
+```
+
+This will scan all `.ts`, `.tsx`, `.js`, and `.jsx` files in the `src/` folder and report unused items.
+
+### Report Mode (Safe-First)
+
+Generate a report instead of modifying files:
+
+```bash
+universal-unused-code-analyzer src/ --report
+```
+
+Choose a report format:
+
+```bash
+universal-unused-code-analyzer src/ --report --report-format json
+universal-unused-code-analyzer src/ --report --report-format md
+```
+
+- **JSON** → machine-readable, great for CI/CD.
+- **Markdown** → human-readable, ideal for PR comments.
+
+### Delete Mode (Aggressive Cleanup)
+
+⚠️ Use with caution. Always start with `--report` first.
+
+```bash
+universal-unused-code-analyzer src/ --delete
+```
+
+This removes unused members directly from your source files.
+
+---
+
+## 🎯 Features
+
+- **Dead/Unused Code Detection**
+  - Functions, classes, variables, constants, enums, types, interfaces.
+  - Named & default exports.
+  - **Cypress commands**: Detects `Cypress.Commands.add("foo")` not used as `cy.foo(...)`.
+  - **Playwright fixtures**: Declared but never injected.
+  - **React components**: Unused PascalCase components.
+  - **Tree-shaken export graph**: Finds unused exports.
+
+- **File Exclusions**
+  - Always ignores `node_modules/`.
+  - Supports `.analyzerignore` (works like `.gitignore`).
+  - Generate a template:
+
+    ```bash
+    universal-unused-code-analyzer --init-ignore
+    ```
+
+- **Reports**
+  - JSON, Markdown, and CLI summary.
+  - Example summary: `Found 12 unused members across 5 files.`
+
+- **Safety First**
+  - Default mode is non-destructive.
+  - `.analyzerignore` lets you control scope.
+  - Clear, colorized logs for confidence.
+
+---
+
+## ⚙️ Example Workflow
+
+1. Initialize ignore rules:
+   ```bash
+   universal-unused-code-analyzer --init-ignore
+   ```
+
+2. Run safe report:
+   ```bash
+   universal-unused-code-analyzer src/ --report --report-format md
+   ```
+
+3. Review the report, update `.analyzerignore` if needed.
+
+4. When confident, clean up:
+   ```bash
+   universal-unused-code-analyzer src/ --delete
+   ```
+
+---
 
 ## CLI Options
 
@@ -34,6 +123,7 @@ analyzer src/ --delete
 - `--cwd <dir>` Working directory
 - `--init-ignore` Create a default `.analyzerignore` in project root
 - `--out <file>` Write report to a file
+
 
 ## What It Detects
 
@@ -65,6 +155,9 @@ Create it with:
 ```bash
 analyzer --init-ignore
 ```
+
+---
+
 
 ## Safety Practices
 
@@ -108,13 +201,47 @@ unused_code:
     paths: [analyzer-report.json]
 ```
 
+---
+
 ## Extending with Custom Detectors
 
 Create a new file in `src/lib/detectors/yourDetector.ts` that implements a `scan(globs): Promise<ScanResult>`. Merge its results in `src/lib/UniversalUnusedCodeAnalyzer.ts`..
 
-## Contributing
+
+### PR Annotations
+
+The package integrates with GitHub Checks API to annotate unused code inline in pull requests.
+
+---
+
+## 🔐 Safety Tips
+
+- Always start with `--report` before `--delete`.
+- Review `.analyzerignore` carefully to avoid accidental removal.
+- Commit before running `--delete` for easy rollback.
+
+---
+
+## 🛠 Scripts
+
+For convenience, add scripts to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "analyze": "universal-unused-code-analyzer src/ --report",
+    "analyze:delete": "universal-unused-code-analyzer src/ --delete"
+  }
+}
+```
+
+---
+
+
+## 🙌 Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 
 ## License
 
