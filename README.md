@@ -1,4 +1,4 @@
-# universal-unused-code-analyzer
+# universal-dead-code-analyzer-elimination
 
 Detect and optionally **remove unused code** across TypeScript/JavaScript projects. Includes detectors for **Cypress custom commands** and **Playwright fixtures**. Safe defaults, CI-friendly reports, and an ignore file for precise scoping.
 
@@ -118,7 +118,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## License
 
-MIT © Your Name
+MIT @ Mohamed Said Ibrahim
 
 ## Changelog
 
