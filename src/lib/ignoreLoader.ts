@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import ignoreLib from 'ignore';
-import { IgnoreApi } from './types.js';
+import { IgnoreApi } from './types';
 
 export async function loadIgnore(cwd: string): Promise<IgnoreApi> {
   const file = path.join(cwd, '.analyzerignore');

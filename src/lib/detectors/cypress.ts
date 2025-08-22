@@ -1,7 +1,7 @@
 import { Project, Node, SyntaxKind } from 'ts-morph';
 import path from 'path';
 import fg from 'fast-glob';
-import { AnalyzerOptions, ScanResult, UnusedMember } from '../types.js';
+import { AnalyzerOptions, ScanResult, UnusedMember } from '../types';
 
 export class CypressDetector {
   private readonly project: Project;

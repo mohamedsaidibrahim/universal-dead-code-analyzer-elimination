@@ -1,35 +1,60 @@
 {
-  "name": "universal-unused-code-analyzer",
-  "version": "1.0.0",
+  "name": "universal-dead-code-analyzer-elimination",
   "description": "Detect and optionally remove unused code across TS/JS projects with Cypress, Playwright, React, and export-graph detectors. GitHub PR annotations and semantic-release included.",
-  "bin": {
-    "analyzer": "dist/cli.js"
-  },
+  "version": "1.0.0",
   "type": "module",
-  "main": "dist/index.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    },
+    "./cli": {
+      "types": "./dist/cli.d.ts",
+      "import": "./dist/cli.js",
+      "require": "./dist/cli.cjs",
+      "default": "./dist/cli.js"
     }
   },
   "files": [
     "dist",
     ".analyzerignore",
     "README.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "LICENSE"
   ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "code-analyzer": "./dist/cli.js",
+    "universal-dead-code-analyzer": "./dist/cli.js"
+  },
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.build.json && rollup -c",
+    "build:watch": "tsc -p tsconfig.build.json --watch",
     "dev": "tsx src/cli.ts --help",
-    "lint": "eslint .",
-    "format": "prettier -w .",
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "dev:watch": "tsx watch src/cli.ts",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest --coverage",
+    "test:ui": "vitest --ui",
+    "test:ci": "vitest run --coverage --reporter=junit --reporter=html",
+    "prepack": "npm run build",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
     "release": "semantic-release",
+    "release:dry-run": "semantic-release --dry-run",
     "init-ignore": "node ./dist/cli.js --init-ignore",
-    "annotate:checks": "node ./scripts/annotate-checks.mjs analyzer-report.json"
+    "annotate:checks": "node ./scripts/annotate-checks.mjs analyzer-report.json",
+    "analyze": "node ./dist/cli.js",
+    "analyze:report": "node ./dist/cli.js --report",
+    "analyze:clean": "node ./dist/cli.js --delete",
+    "analyze:ci": "node ./dist/cli.js --report --fail-on-unused",
+    "postinstall": "echo 'Thanks for installing! Run \\`npx code-analyzer --help\\` for usage info.'"
   },
   "keywords": [
     "unused code",
@@ -41,42 +66,131 @@
     "react",
     "nextjs",
     "static analysis",
-    "cli"
+    "cli",
+    "dead-code",
+    "unused-code",
+    "analyzer",
+    "refactoring",
+    "code-cleanup",
+    "ts-morph",
+    "export-analysis",
+    "github-actions"
   ],
-  "author": "Mohamed Said Ibrahim",
+  "author": {
+    "name": "Mohamed Said Ibrahim",
+    "email": "mohamedibrahim713@outlook.com",
+    "url": "https://github.com/mohamedsaidibrahim/universal-dead-code-analyzer-elimination.git"
+  },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mohamedsaidibrahim/universal-dead-code-analyzer-elimination.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mohamedsaidibrahim/universal-dead-code-analyzer-elimination/issues"
+  },
+  "homepage": "https://github.com/mohamedsaidibrahim/universal-dead-code-analyzer-elimination#readme",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
   "dependencies": {
     "chalk": "^5.6.0",
     "commander": "^14.0.0",
     "fast-glob": "^3.3.3",
     "fs-extra": "^11.3.1",
     "ignore": "^7.0.5",
-    "ts-morph": "^26.0.0"
+    "ts-morph": "^26.0.0",
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-typescript": "^12.1.4",
     "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.4",
     "@semantic-release/npm": "^12.0.2",
+    "@semantic-release/release-notes-generator": "^14.0.2",
     "@types/fs-extra": "^11.0.4",
+    "@types/jest": "^29.5.14",
     "@types/node": "^24.3.0",
     "@typescript-eslint/eslint-plugin": "^8.40.0",
     "@typescript-eslint/parser": "^8.40.0",
     "eslint": "^9.33.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-vitest": "^0.3.32",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.3.0",
     "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
     "rollup": "^4.47.1",
+    "rollup-plugin-dts": "^6.3.0",
     "ts-node": "^10.9.2",
-    "tslib": "^2.8.1",
     "tsx": "^4.20.4",
     "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4"
+  },
+  "peerDependencies": {
+    "typescript": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "release": {
+    "branches": [
+      "main",
+      "next"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/github",
+      "@semantic-release/git"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   }
 }

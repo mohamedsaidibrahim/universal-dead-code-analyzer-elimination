@@ -1,11 +1,11 @@
 // FILE: src/lib/UniversalUnusedCodeAnalyzer.ts
-import { CoreDetector } from './detectors/core.js';
-import { CypressDetector } from './detectors/cypress.js';
-import { PlaywrightDetector } from './detectors/playwright.js';
-import { AnalyzerOptions, IgnoreApi, ScanResult, UnusedMember } from './types.js';
+import { CoreDetector } from './detectors/core';
+import { CypressDetector } from './detectors/cypress';
+import { PlaywrightDetector } from './detectors/playwright';
+import { AnalyzerOptions, IgnoreApi, ScanResult, UnusedMember } from './types';
 import { Project, Node } from 'ts-morph';
 import { ReactDetector } from './detectors/react';
-import { ExportGraphDetector } from './detectors/exportGraph.js';
+import { ExportGraphDetector } from './detectors/exportGraph';
 
 export class UniversalUnusedCodeAnalyzer {
   private core: CoreDetector;

@@ -1,4 +1,4 @@
-import type { ScanResult } from './types.js';
+import type { ScanResult } from './types';
 
 export async function writeReport(result: ScanResult, opts: { format: 'json' | 'md' }) {
   if (opts.format === 'json') {

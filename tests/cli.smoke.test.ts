@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { UniversalUnusedCodeAnalyzer } from '../src/lib/UniversalUnusedCodeAnalyzer.js';
-import { loadIgnore } from '../src/lib/ignoreLoader.js';
+import { UniversalUnusedCodeAnalyzer } from '../src/lib/UniversalUnusedCodeAnalyzer';
+import { loadIgnore } from '../src/lib/ignoreLoader';
 import path from 'path';
 
 describe('analyzer smoke', () => {

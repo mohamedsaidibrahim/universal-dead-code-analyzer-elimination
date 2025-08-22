@@ -1,12 +1,12 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { loadIgnore } from './lib/ignoreLoader.js';
-import { UniversalUnusedCodeAnalyzer } from './lib/UniversalUnusedCodeAnalyzer.js';
-import { writeReport } from './lib/reporter.js';
-import { ensureDefaultIgnore } from './lib/initIgnore.js';
+import { loadIgnore } from './lib/ignoreLoader';
+import { UniversalUnusedCodeAnalyzer } from './lib/UniversalUnusedCodeAnalyzer';
+import { writeReport } from './lib/reporter';
+import { ensureDefaultIgnore } from './lib/initIgnore';
 import fs from 'fs-extra';
 import path from 'path';
-import { UnusedMember } from './lib/types.js';
+import { UnusedMember } from './lib/types';
 
 const program = new Command();
 program

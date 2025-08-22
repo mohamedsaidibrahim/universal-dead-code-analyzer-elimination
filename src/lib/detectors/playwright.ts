@@ -1,7 +1,7 @@
 import fg from 'fast-glob';
 import { Project, Node } from 'ts-morph';
 import path from 'path';
-import { AnalyzerOptions, ScanResult, UnusedMember } from '../types.js';
+import { AnalyzerOptions, ScanResult, UnusedMember } from '../types';
 
 /** Heuristic Playwright detector:
  * - Finds fixtures declared in test.extend<{ foo: ... }>() or via expect.extend? No, focus on test.extend.

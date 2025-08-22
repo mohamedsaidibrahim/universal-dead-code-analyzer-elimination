@@ -1,7 +1,7 @@
 import fg from 'fast-glob';
 import path from 'path';
 import { Project, Node, SyntaxKind } from 'ts-morph';
-import { AnalyzerOptions, ScanResult, UnusedMember } from '../types.js';
+import { AnalyzerOptions, ScanResult, UnusedMember } from '../types';
 
 export class CoreDetector {
   private readonly project: Project;
